@@ -115,77 +115,62 @@
 
                                 <div class="row">
                                     <div class="col-xl-12">
-                                        
-                                        <table class="table table-sm table-striped table-bordered" style="width: 100%;">
-                                                <thead> 
-                                                    <tr style="font-size: 11px;height: 11px;color:rgb(65, 63, 63)" class="text-center">                            
-                                                    <th rowspan="2" style="border: 1px solid rgb(250, 214, 159);width: 6%;background-color: rgb(252, 237, 219);color:#252424">ว/ด/ป</th>
-                                                    <th rowspan="2" style="border: 1px solid rgb(250, 214, 159);width: 12%;background-color: rgb(252, 237, 219);color:#252424">
-                                                        <span class="badge" style="background-color: rgb(7, 192, 152);font-size: 12px;">รับจาก</span>
-                                                         /จ่ายให้
-                                                        </th>
-                                                    <th rowspan="2" style="border: 1px solid rgb(250, 214, 159);width: 6%;background-color: rgb(252, 237, 219);color:#252424">เลขที่เอกสาร</th> 
-                                                    <th rowspan="2" style="border: 1px solid rgb(250, 214, 159);width: 4%;background-color: rgb(252, 237, 219);color:#252424">ราคาต่อหน่วย</th>
-                                                    <th colspan="3" style="border: 1px solid rgb(250, 214, 159);width: 4%;background-color: rgb(252, 237, 219);color:#252424">จำนวน</th>
-                                                    <th rowspan="2" style="border: 1px solid rgb(250, 214, 159);width: 4%;background-color: rgb(252, 237, 219);color:#252424">ราคารวม</th>
-                                                    <th rowspan="2" style="border: 1px solid rgb(250, 214, 159);width: 10%;background-color: rgb(252, 237, 219);color:#252424">หมายเหตุ</th> 
-                                                </tr>  
-                                                <tr style="font-size: 11px;height: 11px;color:rgb(65, 63, 63)" class="text-center">
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 4%;background-color: rgb(252, 237, 219);color:#252424">รับ</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 4%;background-color: rgb(252, 237, 219);color:#252424">จ่าย</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 4%;background-color: rgb(252, 237, 219);color:#252424">คงเหลือ</th>
+                                        {{-- <p style="color: rgb(7, 125, 172);font-size:17px">รายละเอียดการรับเข้า</p>
+                                        <table id="example" class="table table-sm table-striped table-bordered nowrap w-100" style="width: 100%;">
+                                            <thead>
+                                                <tr style="font-size: 10px;">
+                                                    <th class="text-center" style="background-color: rgb(255, 251, 228);font-size: 11px;" width="3%">ลำดับ</th>
+                                                    <th class="text-center" style="background-color: rgb(255, 251, 228);font-size: 11px;">LOT</th>
+                                                    <th class="text-center" style="background-color: rgb(255, 251, 228);font-size: 12px;" width="10%">วันที่รับ</th>
+                                                    <th class="text-center" style="background-color: rgb(255, 251, 228);font-size: 11px;">หน่วย</th>
+                                                    <th class="text-center" style="background-color: rgb(235, 160, 125);font-size: 11px;">รับเข้า</th>
+                                                    <th class="text-center" style="background-color: rgb(174, 236, 245);font-size: 11px;">ราคาต่อหน่วย</th>
+                                                    <th class="text-center" style="background-color: rgb(255, 228, 234);font-size: 11px;">ราคารวม</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @php $i = 1; @endphp
+                                                <?php $i = 0;$total1 = 0; $total2 = 0;$total3 = 0;$total4 = 0;$total5 = 0;$total6 = 0;$total7 = 0;$total8 = 0;$total9 = 0; ?>
                                                 @foreach ($stock_card_recieve as $item)
-                                                @php $i++; @endphp   
-                                                        <tr>
-                                                            <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="6%">{{DateThai($item->recieve_date)}}</td>
-                                                            <td class="text-start" style="border: 1px solid rgb(250, 232, 221);font-size: 12px;"><span class="badge" style="background-color: rgb(7, 192, 152);font-size: 12px;">{{$item->supplies_namesub}}</span></td>
-                                                            <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="6%">{{$item->recieve_po_sup}}</td>
-                                                            <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">{{$item->one_price}}</td>
-                                                            <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">{{$item->qty}}</td> 
-                                                            <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">-</td> 
-                                                            <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">{{$item->total_allqty}}</td> 
-                                                            <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">{{number_format($item->total_allprice, 2)}}</td> 
-                                                            <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="10%">{{$item->lot_no}}</td> 
-                                                        </tr>                                                 
-                                                        @php
-                                                            $datashow2 = DB::select(
-                                                                    'SELECT b.pro_id,b.pro_code,b.pro_name,d.wh_unit_name,b.qty_pay,b.lot_no,c.export_date,b.one_price
-                                                                    ,e.DEPARTMENT_SUB_SUB_NAME,b.stock_list_subid,f.request_no,b.total_stock,b.total_stock_price
-                                                                
-                                                                    FROM wh_stock_export_sub b  
-                                                                    LEFT JOIN wh_stock_export c ON c.wh_stock_export_id = b.wh_stock_export_id
-                                                                    LEFT JOIN wh_request f ON f.wh_request_id = b.wh_request_id
-                                                                    LEFT JOIN wh_unit d ON d.wh_unit_id = b.unit_id
-                                                                    LEFT JOIN department_sub_sub e ON e.DEPARTMENT_SUB_SUB_ID = c.stock_list_subid 
-                                                                    WHERE b.lot_no = "'.$item->lot_no.'" 
-                                                                    GROUP BY b.lot_no,b.wh_stock_export_sub_id
-                                                                    ORDER BY b.lot_no ASC  
-                                                            ');
-                                                        @endphp
-
-                                                        @foreach ($datashow2 as $item2) 
-                                                                <tr>
-                                                                    <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="6%">{{DateThai($item2->export_date)}}</td>
-                                                                    <td class="text-start" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;">{{$item2->DEPARTMENT_SUB_SUB_NAME}}</td>
-                                                                    <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="6%">{{$item2->request_no}}</td>
-                                                                    <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">{{$item2->one_price}}</td>
-                                                                    <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">-</td> 
-                                                                    <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">{{$item2->qty_pay}}</td> 
-                                                                    <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">{{$item2->total_stock}}</td> 
-                                                                    <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="4%">{{number_format($item2->total_stock_price, 2)}}</td> 
-                                                                    <td class="text-center" style="border: 1px solid rgb(250, 232, 221);font-size: 11px;" width="10%">{{$item2->lot_no}}</td> 
-                                                                </tr> 
-                                                        @endforeach
-
-
-                                                @endforeach 
-                                            
-
-                                                {{-- @foreach ($stock_card_recieve as $item)
+                                                <?php $i++ ?>
+                                                <tr style="font-size: 11px;">
+                                                    <td class="text-center" width="3%">{{$i}}</td>
+                                                    <td class="text-center" style="color:rgb(216, 6, 76)">{{$item->lot_no}}</td>
+                                                    <td class="text-center" width="10%">{{$item->recieve_date}}</td>
+                                                    <td class="text-center" width="7%">{{$item->wh_unit_name}}</td>
+                                                    <td class="text-center" style="color:rgb(224, 75, 6)">
+                                                        @if ($item->qty =='') 0
+                                                        @else {{$item->qty}}
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-end" style="color:rgb(4, 115, 180)" width="15%">{{number_format($item->one_price, 2)}}</td>
+                                                    <td class="text-end" style="color:rgb(4, 115, 180)" width="15%">{{number_format($item->qty*$item->one_price, 2)}}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table> --}}
+                                        <table id="example" class="table table-sm table-striped table-bordered nowrap w-100" style="width: 100%;">
+                                                <thead>
+                                                    <tr style="font-size: 12px;height: 11px;" class="text-center">                            
+                                                        <th colspan="7" style="border: 1px solid rgb(250, 214, 159);width: 10%;background-color: rgb(145, 225, 235);color:#252424">รับ</th>
+                                                        <th colspan="5" style="border: 1px solid rgb(250, 214, 159);width: 7%;background-color: rgb(247, 226, 171);color:#252424">จ่าย</th> 
+                                                    </tr>
+                                                    <tr style="font-size: 11px;height: 11px;" class="text-center">                            
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(192, 243, 250);color:#252424">ว/ด/ป</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 12%;background-color: rgb(192, 243, 250);color:#252424">บริษัท</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 7%;background-color: rgb(192, 243, 250);color:#252424">เลขที่ใบส่งของ</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 6%;background-color: rgb(192, 243, 250);color:#252424">จำนวนรับ</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 6%;background-color: rgb(192, 243, 250);color:#252424">รวมรับ</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(192, 243, 250);color:#252424">ราคา/หน่วย</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(192, 243, 250);color:#252424">วันหมดอายุ</th> 
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 10%;background-color: rgb(250, 238, 209);color:#252424">ว/ด/ป</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(250, 238, 209);color:#252424">จำนวนจ่าย</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(250, 238, 209);color:#252424">รวมจ่าย</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(250, 238, 209);color:#252424">คงเหลือ</th>
+                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 14%;background-color: rgb(250, 238, 209);color:#252424">เลขที่ใบเบิก</th>
+                                                </tr>                
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($stock_card_recieve as $item)
                                                     <tr style="font-size: 11px;height: 11px;">        
                                                         <td colspan="7" style="border: 1px solid rgb(250, 232, 221);" class="text-center">
                                                                 <table class="table table-sm table-striped">
@@ -230,9 +215,11 @@
                                                             </table>
 
                                                         </td>
-                                            
+
+                                                            {{-- </td> --}}
+                                                            {{-- <td colspan="5" style="border: 1px solid black;" class="text-center">&nbsp;</td>                                                         --}}
                                                    </tr>   
-                                                @endforeach --}}
+                                                @endforeach
                                             </tbody>
                                         </table> 
                                     </div>

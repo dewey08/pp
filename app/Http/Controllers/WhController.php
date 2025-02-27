@@ -330,30 +330,31 @@ class WhController extends Controller
         $data['stock_name']    = $data_main->stock_list_name;
 
         $data['stock_card_recieve']         = DB::select(
-            'SELECT a.pro_id,a.pro_code,a.pro_name,d.wh_unit_name,b.qty,b.lot_no,c.recieve_date,b.one_price,i.supplies_namesub
-            ,c.recieve_no,c.recieve_po_sup
+            'SELECT c.wh_recieve_id,c.recieve_date,a.pro_id,a.pro_code,a.pro_name,d.wh_unit_name,b.qty,b.lot_no,b.one_price,i.supplies_namesub,b.total_allqty,b.total_allprice
+                    ,c.recieve_no,c.recieve_po_sup
 
-            FROM wh_stock a
-            LEFT JOIN wh_recieve_sub b ON b.pro_id = a.pro_id
-            LEFT JOIN wh_recieve c ON c.wh_recieve_id = b.wh_recieve_id
-            LEFT JOIN wh_unit d ON d.wh_unit_id = a.unit_id
-             LEFT JOIN air_supplies i ON i.air_supplies_id = c.vendor_id
-            WHERE a.pro_id = "'.$idpro.'"
-            GROUP BY b.lot_no ASC
-            ORDER BY b.lot_no ASC
-            
+                    FROM wh_stock a
+                    LEFT JOIN wh_recieve_sub b ON b.pro_id = a.pro_id
+                    LEFT JOIN wh_recieve c ON c.wh_recieve_id = b.wh_recieve_id
+                    LEFT JOIN wh_unit d ON d.wh_unit_id = a.unit_id
+                    LEFT JOIN air_supplies i ON i.air_supplies_id = c.vendor_id
+                    WHERE a.pro_id = "'.$idpro.'"
+                    GROUP BY c.wh_recieve_id  
+                    ORDER BY c.wh_recieve_id ASC
+                     
         ');
-        $data['stock_card_pay']         = DB::select(
-            'SELECT a.pro_id,a.pro_code,a.pro_name,d.wh_unit_name,b.qty_pay,b.lot_no,c.export_date,b.one_price,e.DEPARTMENT_SUB_SUB_NAME
-            FROM wh_stock a
-            LEFT JOIN wh_stock_export_sub b ON b.pro_id = a.pro_id
-            LEFT JOIN wh_stock_export c ON c.wh_stock_export_id = b.wh_stock_export_id
-            LEFT JOIN wh_unit d ON d.wh_unit_id = a.unit_id
-            LEFT JOIN department_sub_sub e ON e.DEPARTMENT_SUB_SUB_ID = c.stock_list_subid
-            WHERE a.pro_id = "'.$idpro.'"
-             GROUP BY b.lot_no,wh_stock_export_sub_id
-            ORDER BY b.wh_stock_export_sub_id ASC
-        ');
+        // ORDER BY b.wh_recieve_sub_id ASC
+        // $data['stock_card_pay']         = DB::select(
+        //     'SELECT a.pro_id,a.pro_code,a.pro_name,d.wh_unit_name,b.qty_pay,b.lot_no,c.export_date,b.one_price,e.DEPARTMENT_SUB_SUB_NAME
+        //     FROM wh_stock a
+        //     LEFT JOIN wh_stock_export_sub b ON b.pro_id = a.pro_id
+        //     LEFT JOIN wh_stock_export c ON c.wh_stock_export_id = b.wh_stock_export_id
+        //     LEFT JOIN wh_unit d ON d.wh_unit_id = a.unit_id
+        //     LEFT JOIN department_sub_sub e ON e.DEPARTMENT_SUB_SUB_ID = c.stock_list_subid
+        //     WHERE a.pro_id = "'.$idpro.'"
+        //      GROUP BY b.lot_no,wh_stock_export_sub_id
+        //     ORDER BY b.wh_stock_export_sub_id ASC
+        // ');
         // ,c.export_date
         $data_qty_  = DB::select(
             'SELECT SUM(b.qty) as qty_rep,b.one_price,SUM(b.total_price) as total_price
@@ -449,7 +450,7 @@ class WhController extends Controller
 
                 WHERE b.pro_id = "'.$idpro.'" 
                 GROUP BY b.lot_no,wh_stock_export_sub_id
-                ORDER BY b.wh_stock_export_sub_id ASC 
+                ORDER BY b.lot_no ASC 
                             
             ');
 
@@ -524,7 +525,6 @@ class WhController extends Controller
         $canvas->page_text(510, 12, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(255, 0, 0));
         return @$pdf->stream();
     }
-
 
     public function wh_recieve(Request $request)
     {
@@ -1007,20 +1007,17 @@ class WhController extends Controller
         if ($idpro == '') {
             return back();
         } else {
-
             $pro           = Wh_product::where('pro_id',$idpro)->first();
             $proid         = $pro->pro_id;
             $pro_code      = $pro->pro_code;
             $proname       = $pro->pro_name;
             $unitid        = $pro->unit_id;
-
             $unit          = Wh_unit::where('wh_unit_id',$unitid)->first();
             $idunit        = $unit->wh_unit_id;
-            $nameunit      = $unit->wh_unit_name;
-
+            $nameunit      = $unit->wh_unit_name;                       
+            // $total_allqty  = $total_allqty_->total_allqty; 
             // $bgs_year      = DB::table('budget_year')->where('years_now','Y')->first();
             // $bg_yearnow    = $bgs_year->leave_year_id;
-
             $pro_check     = Wh_recieve_sub::where('wh_recieve_id',$request->wh_recieve_id)->where('pro_id',$proid)->where('recieve_year',$request->data_year)->where('stock_list_id',$request->stock_list_id)->count();
             if ($pro_check > 0) {
                 Wh_recieve_sub::where('wh_recieve_id',$request->wh_recieve_id)->where('pro_id',$proid)->where('recieve_year',$request->data_year)->where('stock_list_id',$request->stock_list_id)->update([
@@ -1034,6 +1031,19 @@ class WhController extends Controller
                     'user_id'              => Auth::user()->id
                 ]);
             } else {
+                $count_pro         = Wh_recieve_sub::where('pro_id',$idpro)->count();
+                $total_allqty_max  = Wh_recieve_sub::where('pro_id',$idpro)->max('wh_recieve_sub_id');
+                $datalast_         = Wh_recieve_sub::where('pro_id',$idpro)->where('wh_recieve_sub_id',$total_allqty_max)->first();
+                $datalast          = $datalast_->total_allqty;
+                $lastprice         = $datalast_->total_allprice;
+                // dd($lastprice);
+                if ($count_pro < 1) {                       
+                            $total_allqty    = $request->qty;
+                            $total_allprice  = $request->qty*$request->one_price;                        
+                } else {
+                            $total_allqty    = $request->qty + $datalast;
+                            $total_allprice  = ($request->qty*$request->one_price) + $lastprice;
+                }   
                 Wh_recieve_sub::insert([
                     'wh_recieve_id'        => $request->wh_recieve_id,
                     'stock_list_id'        => $request->stock_list_id,
@@ -1047,8 +1057,12 @@ class WhController extends Controller
                     'one_price'            => $request->one_price,
                     'total_price'          => $request->one_price*$request->qty,
                     'lot_no'               => $request->lot_no,
+                  
+                    'user_id'              => Auth::user()->id,
+
                     'stock_rep_total'      => $request->qty,
-                    'user_id'              => Auth::user()->id
+                    'total_allqty'         => $total_allqty,
+                    'total_allprice'       => $total_allprice,
                 ]);
             }
             $maxid   = Wh_recieve_sub::where('wh_recieve_id',$request->wh_recieve_id)->where('pro_id',$proid)->where('recieve_year',$request->data_year)->where('stock_list_id',$request->stock_list_id)->max('wh_recieve_sub_id');
@@ -1083,8 +1097,6 @@ class WhController extends Controller
                 ]);
             }
         }
-
-        // return back();
         return response()->json([
             'status'    => '200'
         ]);
@@ -1456,6 +1468,18 @@ class WhController extends Controller
                         'user_id'              => Auth::user()->id
                     ]);
                 } else {
+
+                    $count_pro         = Wh_stock_export_sub::where('pro_id',$value->pro_id)->where('lot_no',$value->lot_no)->count();
+                    if ($count_pro < 1) {
+                            $total_stock        =  $value->total_stock;
+                            $total_stock_price  =  $value->total_stock_price;
+                    } else {
+                            $total_allqty_max  = Wh_stock_export_sub::where('pro_id',$value->pro_id)->where('lot_no',$value->lot_no)->max('wh_stock_export_sub_id');
+                            $datalast_         = Wh_stock_export_sub::where('pro_id',$idpro)->where('wh_stock_export_sub_id',$total_allqty_max)->first();
+                            $total_stock       = $datalast_->total_stock-$value->qty_pay;
+                            $total_stock_price = $datalast_->total_stock_price-$value->one_price;
+                    }                   
+                   
                     Wh_stock_export_sub::insert([
                         'wh_request_subpay_id' => $value->wh_request_subpay_id,
                         'wh_stock_export_id'   => $wh_stock_export_id,
@@ -1473,9 +1497,14 @@ class WhController extends Controller
                         'one_price'            => $value->one_price,
                         'total_price'          => $value->one_price*$value->qty_pay,
                         'lot_no'               => $value->lot_no,
+
+                        'total_stock'          => $total_stock,
+                        'total_stock_price'    => $total_stock_price,
+
                         'user_id'              => Auth::user()->id
                     ]);
                 }
+           
 
                 $idexport_export         = Wh_stock_export_sub::where('wh_request_id',$request->wh_request_id)->where('pro_id',$value->pro_id)->where('lot_no',$value->lot_no)->first();
                 $wh_stock_export_sub_id  = $idexport_export->wh_stock_export_sub_id;
@@ -1615,6 +1644,7 @@ class WhController extends Controller
         $iddeb             = Wh_request::where('wh_request_id',$wh_request_id)->first();
 
         $idrecieve_sub     = Wh_recieve_sub::where('wh_recieve_sub_id',$request->wh_recieve_sub_id)->first();
+
         $id_pro            = Wh_request_sub::where('wh_request_id',$wh_request_id)->where('pro_id',$idrecieve_sub->pro_id)->first();
         $qty_req           = $id_pro->qty;
         $count             = Wh_request_subpay::where('wh_recieve_sub_id',$request->wh_recieve_sub_id)->where('wh_request_id',$wh_request_id)->count();
@@ -1623,6 +1653,31 @@ class WhController extends Controller
                     'lot_no'            => $idrecieve_sub->lot_no,
             ]);
         } else {
+            $count_pro         = Wh_request_subpay::where('lot_no',$idrecieve_sub->lot_no)->count();
+            $total_allqty_max  = Wh_request_subpay::where('lot_no',$idrecieve_sub->lot_no)->max('wh_request_subpay_id');
+           
+            $total_allqty_rec_max  = Wh_recieve_sub::where('lot_no',$idrecieve_sub->lot_no)->max('wh_recieve_sub_id');
+            $datalast_rec          = Wh_recieve_sub::where('lot_no',$idrecieve_sub->lot_no)->where('wh_recieve_sub_id',$total_allqty_rec_max)->first();
+            // stock_rep_total
+            // $total_stock_last      = $datalast_rec->total_allqty;
+            $total_stock_last      = $datalast_rec->stock_rep_total;
+            $total_allprice_last   = $datalast_rec->total_allprice;
+
+            if ($count_pro < 1) {   
+                
+                   
+
+                    $total_stock        = $total_stock_last - $request->qty_pay;
+                    $total_stock_price  = ($total_stock_last - $request->qty_pay) * $idrecieve_sub->one_price;                        
+            } else {
+                    // $datalast_         = Wh_request_subpay::where('lot_no',$idrecieve_sub->lot_no)->where('wh_request_subpay_id',$total_allqty_max)->first();
+                    // $datalast          = $datalast_->total_stock;
+                    // $lastprice         = $datalast_->total_stock_price;
+
+                    // $total_stock       = $request->qty_pay + $datalast;
+                    // $total_stock_price  = ($request->qty_pay*$request->one_price) + $lastprice;
+            }   
+
             Wh_request_subpay::insert([
                 'wh_recieve_sub_id'  => $request->wh_recieve_sub_id,
                 'wh_request_id'      => $wh_request_id,
@@ -1638,6 +1693,10 @@ class WhController extends Controller
                 'unit_name'          => $idrecieve_sub->unit_name,
                 'one_price'          => $idrecieve_sub->one_price,
                 'lot_no'             => $idrecieve_sub->lot_no,
+
+                'total_stock'        => $total_stock,
+                'total_stock_price'  => $total_stock_price,
+
                 'user_id'            => Auth::user()->id
             ]);
             Wh_request_sub::where('wh_request_id',$wh_request_id)->where('pro_id',$idrecieve_sub->pro_id)->update([
