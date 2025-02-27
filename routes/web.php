@@ -2252,7 +2252,7 @@ Route::get('home_supplies_excel', [App\Http\Controllers\AirController::class, 'h
   Route::match(['get', 'post'], 'account_301_prescb_update', [App\Http\Controllers\Account301Controller::class, 'account_301_prescb_update'])->name('acc.account_301_prescb_update'); //
   Route::match(['get', 'post'], 'account_301_svpid_update', [App\Http\Controllers\Account301Controller::class, 'account_301_svpid_update'])->name('acc.account_301_svpid_update'); //
   Route::match(['get', 'post'], 'account_301_rep', [App\Http\Controllers\Account301Controller::class, 'account_301_rep'])->name('acc.account_301_rep'); //
-  Route::match(['get', 'post'], 'account_301_repsave', [App\Http\Controllers\Account301Controller::class, 'account_301_svpid_update'])->name('acc.account_301_svpid_update'); //
+  Route::match(['get', 'post'], 'account_301_repsave', [App\Http\Controllers\Account301Controller::class, 'account_301_repsave'])->name('acc.account_301_repsave'); //
 
 
   Route::match(['get', 'post'], 'account_3011_dash', [App\Http\Controllers\Account3011Controller::class, 'account_3011_dash'])->name('acc.account_3011_dash'); //

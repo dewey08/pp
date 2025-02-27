@@ -114,8 +114,8 @@
                             <div class="card-body">
 
                                 <div class="row">
-                                    <div class="col-xl-12">
-                                        {{-- <p style="color: rgb(7, 125, 172);font-size:17px">รายละเอียดการรับเข้า</p>
+                                    <div class="col-xl-4">
+                                        <p style="color: rgb(7, 125, 172);font-size:17px">รายละเอียดการรับเข้า</p>
                                         <table id="example" class="table table-sm table-striped table-bordered nowrap w-100" style="width: 100%;">
                                             <thead>
                                                 <tr style="font-size: 10px;">
@@ -147,83 +147,9 @@
                                                 </tr>
                                                 @endforeach
                                             </tbody>
-                                        </table> --}}
-                                        <table id="example" class="table table-sm table-striped table-bordered nowrap w-100" style="width: 100%;">
-                                                <thead>
-                                                    <tr style="font-size: 12px;height: 11px;" class="text-center">                            
-                                                        <th colspan="7" style="border: 1px solid rgb(250, 214, 159);width: 10%;background-color: rgb(145, 225, 235);color:#252424">รับ</th>
-                                                        <th colspan="5" style="border: 1px solid rgb(250, 214, 159);width: 7%;background-color: rgb(247, 226, 171);color:#252424">จ่าย</th> 
-                                                    </tr>
-                                                    <tr style="font-size: 11px;height: 11px;" class="text-center">                            
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(192, 243, 250);color:#252424">ว/ด/ป</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 12%;background-color: rgb(192, 243, 250);color:#252424">บริษัท</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 7%;background-color: rgb(192, 243, 250);color:#252424">เลขที่ใบส่งของ</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 6%;background-color: rgb(192, 243, 250);color:#252424">จำนวนรับ</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 6%;background-color: rgb(192, 243, 250);color:#252424">รวมรับ</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(192, 243, 250);color:#252424">ราคา/หน่วย</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(192, 243, 250);color:#252424">วันหมดอายุ</th> 
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 10%;background-color: rgb(250, 238, 209);color:#252424">ว/ด/ป</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(250, 238, 209);color:#252424">จำนวนจ่าย</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(250, 238, 209);color:#252424">รวมจ่าย</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 8%;background-color: rgb(250, 238, 209);color:#252424">คงเหลือ</th>
-                                                    <th style="border: 1px solid rgb(250, 214, 159);width: 14%;background-color: rgb(250, 238, 209);color:#252424">เลขที่ใบเบิก</th>
-                                                </tr>                
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($stock_card_recieve as $item)
-                                                    <tr style="font-size: 11px;height: 11px;">        
-                                                        <td colspan="7" style="border: 1px solid rgb(250, 232, 221);" class="text-center">
-                                                                <table class="table table-sm table-striped">
-                                                                    <tr>
-                                                                        <td>{{$item->recieve_date}}</td>
-                                                                        <td>{{$item->supplies_namesub}}</td>
-                                                                        <td>{{$item->recieve_po_sup}}</td>
-                                                                        <td>{{$item->qty}}</td>
-                                                                        <td>{{$item->qty}}</td>
-                                                                        <td>{{$item->one_price}}</td>
-                                                                        <td></td> 
-                                                                    </tr>                                                                    
-                                                                </table>
-                                                        </td>
-                                                        <td colspan="5" style="border: 1px solid rgb(250, 232, 221);" class="text-center">
-                                                            @php
-                                                                $datashow2 = DB::select(
-                                                                    'SELECT b.pro_id,b.pro_code,b.pro_name,d.wh_unit_name,b.qty_pay,b.lot_no,c.export_date,b.one_price,e.DEPARTMENT_SUB_SUB_NAME,b.stock_list_subid,f.request_no,b.total_stock
-                                                                 
-                                                                    FROM wh_stock_export_sub b  
-                                                                    LEFT JOIN wh_stock_export c ON c.wh_stock_export_id = b.wh_stock_export_id
-                                                                    LEFT JOIN wh_request f ON f.wh_request_id = b.wh_request_id
-                                                                    LEFT JOIN wh_unit d ON d.wh_unit_id = b.unit_id
-                                                                    LEFT JOIN department_sub_sub e ON e.DEPARTMENT_SUB_SUB_ID = c.stock_list_subid 
-                                                                    WHERE b.lot_no = "'.$item->lot_no.'" 
-                                                                    GROUP BY b.lot_no,b.wh_stock_export_sub_id
-                                                                    ORDER BY b.wh_stock_export_sub_id ASC 
-                                                                                
-                                                                ');
-                                                            @endphp
-                                                            <table class="table table-sm table-striped" width="100%">
-                                                                @foreach ($datashow2 as $item2)
-                                                                    <tr>
-                                                                        <td style="border: 1px solid rgb(250, 232, 221);" width="20%">&nbsp;{{DateThai($item2->export_date)}}</td>
-                                                                        <td style="border: 1px solid rgb(250, 232, 221);" width="20%">&nbsp;{{$item2->qty_pay}}</td>
-                                                                        <td style="border: 1px solid rgb(250, 232, 221);" width="20%">3</td>
-                                                                        <td style="border: 1px solid rgb(250, 232, 221);" width="20%">4</td>
-                                                                        <td style="border: 1px solid rgb(250, 232, 221);" width="20%">5</td> 
-                                                                    </tr> 
-                                                                @endforeach
-                                                               
-                                                            </table>
-
-                                                        </td>
-
-                                                            {{-- </td> --}}
-                                                            {{-- <td colspan="5" style="border: 1px solid black;" class="text-center">&nbsp;</td>                                                         --}}
-                                                   </tr>   
-                                                @endforeach
-                                            </tbody>
-                                        </table> 
+                                        </table>
                                     </div>
-                                    {{-- <div class="col-xl-8">
+                                    <div class="col-xl-8">
                                         <p style="color: rgb(7, 125, 172);font-size:17px">รายละเอียดการจ่ายออก</p>
                                         <table id="example2" class="table table-sm table-striped table-bordered nowrap w-100" style="width: 100%;">
                                             <thead>
@@ -263,7 +189,7 @@
                                             </tbody>
 
                                         </table>
-                                    </div> --}}
+                                    </div>
                                 </div>
                             </div>
 

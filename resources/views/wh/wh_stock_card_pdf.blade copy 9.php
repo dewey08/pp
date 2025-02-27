@@ -141,14 +141,47 @@
                               <tbody>
           @endif
 
-                         
+                            @php            
+                                       
+                                       $data_rep   = DB::table('wh_recieve_sub')->where('wh_recieve_sub.lot_no','=',$item->lot_no)->first();
+                                                // ->sum('wh_stock_export_sub.qty_pay'); 
+                                        $qty = $data_rep->qty;
+                                        $data_countpro   = DB::table('wh_recieve_sub')->where('wh_recieve_sub.pro_id','=',$item->pro_id)->count();
+                                        $data_countrep   = DB::table('wh_recieve_sub')->where('wh_recieve_sub.lot_no','=',$item->lot_no)->count();
+                                        $rep   = DB::table('wh_recieve_sub')->where('wh_recieve_sub.pro_id','=',$item->pro_id)->groupBy('lot_no')->get();
+
+                                        $datashow = DB::select(
+                                              'SELECT a.pro_id,a.pro_code,a.pro_name,d.wh_unit_name,b.qty,b.lot_no,c.recieve_date,b.one_price,b.export_date,b.qty_pay,b.total_pay,b.stock_rep_total
+                                              ,c.recieve_no,c.recieve_po_sup,e.supplies_name,e.supplies_namesub
+                                              FROM wh_stock a
+                                              LEFT JOIN wh_recieve_sub b ON b.pro_id = a.pro_id
+                                              LEFT JOIN wh_recieve c ON c.wh_recieve_id = b.wh_recieve_id
+                                              LEFT JOIN wh_unit d ON d.wh_unit_id = a.unit_id
+                                              LEFT JOIN air_supplies e ON e.air_supplies_id = c.vendor_id
+                                              WHERE a.pro_id = "'.$item->pro_id.'" 
+                                              GROUP BY b.lot_no ASC
+                                              ORDER BY b.lot_no ASC   
+                                                          
+                                        ');
+                            @endphp
+                           
                       
-                              <tr style="font-size: 11px;height: 11px;">                                 
+                              <tr style="font-size: 11px;height: 11px;">  
+                                
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{DateThai($item->recieve_date)}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{$item->supplies_namesub}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{$item->recieve_po_sup}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{$item->total_pay}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{$item->stock_rep_total}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{$item->one_price}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;</td>
                                       
-                                 <td colspan="7" style="border: 1px solid black;" class="text-center">&nbsp;</td>
-                                 <td colspan="5" style="border: 1px solid black;" class="text-center">&nbsp;</td>
                                       
-                                    
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{DateThai($item->export_date)}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{$item->qty_pay}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{$item->qty_pay}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{$item->total_stock}}</td>
+                                      <td style="border: 1px solid black;" class="text-center">&nbsp;{{$item->request_no}}</td> 
                                 </tr>   
                         
 

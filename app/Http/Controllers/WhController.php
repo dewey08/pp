@@ -330,12 +330,14 @@ class WhController extends Controller
         $data['stock_name']    = $data_main->stock_list_name;
 
         $data['stock_card_recieve']         = DB::select(
-            'SELECT a.pro_id,a.pro_code,a.pro_name,d.wh_unit_name,b.qty,b.lot_no,c.recieve_date,b.one_price
+            'SELECT a.pro_id,a.pro_code,a.pro_name,d.wh_unit_name,b.qty,b.lot_no,c.recieve_date,b.one_price,i.supplies_namesub
+            ,c.recieve_no,c.recieve_po_sup
 
             FROM wh_stock a
             LEFT JOIN wh_recieve_sub b ON b.pro_id = a.pro_id
             LEFT JOIN wh_recieve c ON c.wh_recieve_id = b.wh_recieve_id
             LEFT JOIN wh_unit d ON d.wh_unit_id = a.unit_id
+             LEFT JOIN air_supplies i ON i.air_supplies_id = c.vendor_id
             WHERE a.pro_id = "'.$idpro.'"
             GROUP BY b.lot_no ASC
             ORDER BY b.lot_no ASC
@@ -428,10 +430,8 @@ class WhController extends Controller
             //     LEFT JOIN air_supplies e ON e.air_supplies_id = c.vendor_id
             //     WHERE a.pro_id = "'.$idpro.'" 
             //     GROUP BY b.lot_no ASC
-
-            
-            //     ORDER BY b.lot_no ASC   
-                            
+ 
+            //     ORDER BY b.lot_no ASC                               
             // ');
 
             $datashow = DB::select(
@@ -1047,6 +1047,7 @@ class WhController extends Controller
                     'one_price'            => $request->one_price,
                     'total_price'          => $request->one_price*$request->qty,
                     'lot_no'               => $request->lot_no,
+                    'stock_rep_total'      => $request->qty,
                     'user_id'              => Auth::user()->id
                 ]);
             }

@@ -177,11 +177,11 @@
 
                                                 <td class="text-start" width="5%">
                                                     @if ($item->stamp =='N')
-                                                        {{-- <img src="{{ asset('images/Cancel_new2.png') }}" height="23px" width="23px"> --}}
-                                                        22222
+                                                        <img src="{{ asset('images/Cancel_new2.png') }}" height="23px" width="23px">
+                                                      
                                                     @else
-                                                    3333
-                                                    {{-- <img src="{{ asset('images/check_trueinfo3.png') }}" height="23px" width="23px"> --}}
+                                                    
+                                                    <img src="{{ asset('images/check_trueinfo3.png') }}" height="23px" width="23px">
                                                     @endif
                                                 </td>
 
