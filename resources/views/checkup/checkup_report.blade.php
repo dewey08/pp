@@ -352,26 +352,49 @@
                     <thead>
                         <tr>
                             <th class="text-center" width="3%" style="background-color: rgb(219, 247, 232)">ลำดับ</th>
-                            <th class="text-center" width="10%" style="background-color: rgb(221, 219, 247)">รายการ</th>
+                            <th class="text-center" width="5%" style="background-color: rgb(221, 219, 247)">รายการ</th>
                             <th class="text-center" width="5%" style="background-color: rgb(199, 224, 252)">ผลตรวจ</th>
                             <th class="text-center" width="10%" style="background-color: rgb(255, 255, 255)">ค่ามาตรฐาน</th>
-                            <th class="text-center" width="3%" style="background-color: rgb(219, 247, 232)">ปกติ</th>
-                            <th class="text-center" width="3%" style="background-color: rgb(252, 182, 182)">ไม่ปกติ</th>
+                            <th class="text-center" width="3%" style="background-color: rgb(219, 247, 232)">ผลตรวจ</th>
+                            {{-- <th class="text-center" width="3%" style="background-color: rgb(252, 182, 182)">ไม่ปกติ</th> --}}
                         </tr>
                     </thead>
 
                     <tbody>
                         <?php $i = 0; $total1 = 0; ?>
-                        @foreach ($data_show_sub as $item_sub)
+                        @foreach ($data_show_subnew as $item_sub)
                         <?php $i++; ?>
                             <tr>
-                                <td class="text-center" width="3%">{{$i}}</td>
-                                <td class="text-start" width="10%">{{$item_sub->lab_items_name}}&nbsp;{{$item_sub->lab_items_display_name}}</td>
-                                <td class="text-center" width="5%">{{$item_sub->lab_order_result}}</td>
-                                <td class="text-center" width="10%"></td>
-                                <td class="text-center" width="3%"></td>
-                                <td class="text-center" width="3%"></td>
-                            </tr>     
+                                <td class="text-center" width="2%">
+                                    <input type="hidden" name="" id="" value="{{$item_sub->lab_items_code}}">
+                                    <input type="hidden" name="" id="" value="{{$item_sub->sex}}">
+                                    <input type="hidden" name="" id="" value="{{$item_sub->age_y}}">
+                                    {{$i}}
+                                </td>
+                                <td class="text-start" width="5%" style="font-size: 14px">{{$item_sub->lab_items_name}}&nbsp;{{$item_sub->lab_items_display_name}}</td>
+                                <td class="text-center" width="5%" style="font-size: 14px">{{$item_sub->lab_order_result}}</td>
+                                <td class="text-center" width="10%" style="font-size: 14px">{{$item_sub->lab_items_normal_value_ref}}</td>
+                                <td class="text-center" width="3%">
+                                    @if ($item_sub->lab_items_normal_value_ref == '')
+                                            <span class="badge bg-primary" style="font-size: 14px">{{$item_sub->lab_order_result}}</span>
+                                        @else
+
+                                            @if ($item_sub->lab_order_result == '-')
+                                                
+                                            @else
+                                                @if ($item_sub->lab_order_result_new =='ปกติ')
+                                                    <span class="badge bg-success" style="font-size: 14px">{{$item_sub->lab_order_result_new}}</span>
+
+                                                @elseif($item_sub->lab_order_result_new =='ผิดปกติ')
+                                                    <span class="badge bg-danger" style="font-size: 14px">{{$item_sub->lab_order_result_new}}</span>
+                                                @else
+                                                <span class="badge bg-light" style="font-size: 14px">{{$item_sub->lab_order_result_new}}</span>
+                                            @endif
+                                        @endif
+                                    @endif     
+                                </td>   
+                            </tr>                                 
+
                         @endforeach
                        
 
